@@ -1,17 +1,51 @@
+/* ---------- Palettes ----------
+   Set on <html> (and on the settings swatches) via data-palette.
+   --bg-0..3 are the gradient stops, darkest first. */
+:root,
+[data-palette="midnight"] {      /* midnight navy + plum */
+  --bg-0: #05060d;
+  --bg-1: #0a0e26;
+  --bg-2: #151b4c;
+  --bg-3: #3b1c4f;
+  --glow-rgb: 150, 100, 220;
+  --surface-rgb: 12, 12, 30;     /* opaque-ish panels and dropdowns */
+  --accent: #b6b4ff;             /* soft periwinkle */
+  --accent-rgb: 182, 180, 255;
+}
+
+[data-palette="teal"] {          /* charcoal + deep teal */
+  --bg-0: #08090a;
+  --bg-1: #121416;
+  --bg-2: #1a2023;
+  --bg-3: #0e3c3e;
+  --glow-rgb: 50, 170, 160;
+  --surface-rgb: 14, 18, 20;
+  --accent: #86d3c9;
+  --accent-rgb: 134, 211, 201;
+}
+
+[data-palette="burgundy"] {      /* near-black + deep burgundy */
+  --bg-0: #060304;
+  --bg-1: #100709;
+  --bg-2: #230910;
+  --bg-3: #4a1020;
+  --glow-rgb: 200, 60, 90;
+  --surface-rgb: 20, 10, 13;
+  --accent: #e6c391;             /* champagne; stays distinct from error red */
+  --accent-rgb: 230, 195, 145;
+}
+
 /* ---------- Tokens ---------- */
 :root {
-  --black: #05070d;
-  --ink: #070b1a;
-  --midnight: #0a1a46;
-  --electric: #12307f;
-
   --text: rgba(255, 255, 255, 0.92);
   --text-soft: rgba(255, 255, 255, 0.72);
   --text-muted: rgba(255, 255, 255, 0.5);
 
-  --accent: #8ab4ff;            /* soft electric blue */
-  --accent-rgb: 138, 180, 255;
   --accent-soft: rgba(var(--accent-rgb), 0.14);
+  --accent-strong: rgba(var(--accent-rgb), 0.26);  /* hover on accent-soft */
+  --hover-bg: rgba(255, 255, 255, 0.06);
+  --danger: #ff9a9a;
+  --danger-rgb: 255, 154, 154;
 
   --glass-bg: rgba(255, 255, 255, 0.055);
   --glass-border: rgba(255, 255, 255, 0.11);
@@ -35,7 +69,7 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  background: var(--black);
+  background: var(--bg-0);
   color: var(--text);
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
@@ -43,7 +77,7 @@ body {
 
 h1, h2, p { margin: 0; }
 
-button, input { font: inherit; color: inherit; }
+button, input, select { font: inherit; color: inherit; }
 
 /* ---------- Background ---------- */
 .bg {
@@ -53,18 +87,23 @@ button, input { font: inherit; color: inherit; }
   overflow: hidden;
 }
 
+/* An oversized layer slid with transform, which the GPU composites;
+   animating background-position would repaint the whole screen every frame. */
 .bg__gradient {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 300%;
+  height: 300%;
   background: linear-gradient(
     125deg,
-    var(--black) 0%,
-    var(--ink) 25%,
-    var(--midnight) 55%,
-    var(--electric) 75%,
-    var(--black) 100%
+    var(--bg-0) 0%,
+    var(--bg-1) 25%,
+    var(--bg-2) 55%,
+    var(--bg-3) 75%,
+    var(--bg-0) 100%
   );
-  background-size: 300% 300%;
+  will-change: transform;
   animation: gradient-shift 60s ease-in-out infinite alternate;
 }
 
@@ -77,17 +116,18 @@ button, input { font: inherit; color: inherit; }
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(70, 130, 255, 0.13) 0%,
-    rgba(70, 130, 255, 0.05) 35%,
+    rgba(var(--glow-rgb), 0.13) 0%,
+    rgba(var(--glow-rgb), 0.05) 35%,
     transparent 70%
   );
-  filter: blur(40px);
+  will-change: transform;
   animation: glow-drift 90s ease-in-out infinite alternate;
 }
 
+/* Same path as background-position 0% 30% -> 100% 70% on a 300% background. */
 @keyframes gradient-shift {
-  0%   { background-position: 0% 30%; }
-  100% { background-position: 100% 70%; }
+  0%   { transform: translate(0, -20%); }
+  100% { transform: translate(-66.667%, -46.667%); }
 }
 
 @keyframes glow-drift {
@@ -131,14 +171,23 @@ button, input { font: inherit; color: inherit; }
   text-shadow: 0 0 40px rgba(var(--accent-rgb), 0.12);
 }
 
-.clock__period {
+/* AM/PM and seconds, stacked beside the hours and minutes. The last item sits
+   on the digits' baseline; with both shown, AM/PM lines up with their top. */
+.clock__aside {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.15em;
+  baseline-source: last;
+  margin-left: 0.35em;
   font-size: 0.22em;
-  font-weight: 300;
+  line-height: 1;
   letter-spacing: 0.08em;
-  margin-left: 0.3em;
   color: var(--text-muted);
-  vertical-align: 0.35em;
 }
+
+.clock__period { font-weight: 300; }
+.clock__seconds { font-weight: 200; }
 
 .clock__date {
   margin-top: 0.9rem;
@@ -276,13 +325,13 @@ button, input { font: inherit; color: inherit; }
   transition: background 0.2s ease, opacity 0.2s ease;
 }
 
-.card__button:hover:not(:disabled) { background: rgba(var(--accent-rgb), 0.26); }
+.card__button:hover:not(:disabled) { background: var(--accent-strong); }
 .card__button:disabled { opacity: 0.5; cursor: default; }
 
 .card__error {
   font-size: 0.8rem;
   line-height: 1.5;
-  color: #ff9a9a;
+  color: var(--danger);
   overflow-wrap: anywhere;
 }
 
@@ -309,7 +358,7 @@ button, input { font: inherit; color: inherit; }
   transition: background 0.2s ease, opacity 0.2s ease;
 }
 
-.cal__event:hover { background: rgba(255, 255, 255, 0.06); }
+.cal__event:hover { background: var(--hover-bg); }
 
 .cal__event:focus-visible,
 .cal__next:focus-visible,
@@ -391,7 +440,7 @@ button, input { font: inherit; color: inherit; }
 
 .card__toggle:hover {
   color: var(--text-soft);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--hover-bg);
 }
 
 .card__toggle:focus-visible {
@@ -447,7 +496,7 @@ button, input { font: inherit; color: inherit; }
 }
 
 .card__select option {
-  background: #0b1226;
+  background: rgb(var(--surface-rgb));
   color: var(--text);
   text-transform: none;
 }
@@ -482,7 +531,7 @@ button, input { font: inherit; color: inherit; }
               padding 0.4s ease;
 }
 
-.task:hover { background: rgba(255, 255, 255, 0.05); }
+.task:hover { background: var(--hover-bg); }
 .task--sub { padding-left: 2rem; }
 .task.is-saving { opacity: 0.55; }
 
@@ -562,8 +611,8 @@ button, input { font: inherit; color: inherit; }
   font-variant-numeric: tabular-nums;
 }
 
-.task.is-overdue { box-shadow: inset 2px 0 0 rgba(255, 128, 112, 0.55); }
-.task.is-overdue .task__due { color: rgba(255, 160, 145, 0.8); }
+.task.is-overdue { box-shadow: inset 2px 0 0 rgba(var(--danger-rgb), 0.55); }
+.task.is-overdue .task__due { color: rgba(var(--danger-rgb), 0.85); }
 
 .tasks__add {
   display: flex;
@@ -615,7 +664,7 @@ button, input { font: inherit; color: inherit; }
   max-width: calc(100% - 2rem);
   padding: 0.45rem 0.6rem 0.45rem 0.95rem;
   border-radius: 999px;
-  background: rgba(8, 12, 28, 0.78);
+  background: rgba(var(--surface-rgb), 0.78);
   font-size: 0.8rem;
   color: var(--text-soft);
   white-space: nowrap;
@@ -633,7 +682,7 @@ button, input { font: inherit; color: inherit; }
 }
 
 .toast > span:first-child { overflow: hidden; text-overflow: ellipsis; }
-.toast.is-error { color: #ff9a9a; padding-right: 0.95rem; }
+.toast.is-error { color: var(--danger); padding-right: 0.95rem; }
 .toast:not(.has-undo) .toast__sep,
 .toast:not(.has-undo) .toast__undo { display: none; }
 .toast__sep { color: var(--text-muted); }
@@ -650,16 +699,233 @@ button, input { font: inherit; color: inherit; }
   transition: background 0.2s ease;
 }
 
-.toast__undo:hover { background: rgba(var(--accent-rgb), 0.26); }
+.toast__undo:hover { background: var(--accent-strong); }
 
 .toast__undo:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
+/* ---------- Settings ---------- */
+.settings__gear {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  opacity: 0.22;
+  cursor: pointer;
+  transition: opacity 0.3s ease, background 0.3s ease, transform 0.6s ease;
+}
+
+.settings__gear svg { width: 1rem; height: 1rem; }
+
+.settings__gear:hover,
+.settings__gear:focus-visible,
+.settings__gear[aria-expanded="true"] {
+  opacity: 0.8;
+  background: var(--hover-bg);
+}
+
+.settings__gear[aria-expanded="true"] { transform: rotate(45deg); }
+
+.settings__gear:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.settings {
+  position: fixed;
+  left: 16px;
+  bottom: 60px;
+  z-index: 10;
+  width: 260px;
+  max-width: calc(100vw - 32px);
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  background: rgba(var(--surface-rgb), 0.72);
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  animation: settings-in 0.2s ease;
+}
+
+.settings[hidden] { display: none; }
+
+@keyframes settings-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+.settings form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  min-width: 0;
+}
+
+/* <legend> ignores flex layout; float it so it sits in the row. */
+.settings__row > legend { float: left; padding: 0; }
+.settings__row > legend + * { margin-left: auto; }
+
+.settings__row--stack { display: block; }
+.settings__row--stack > legend { float: none; margin-bottom: 0.5rem; }
+
+.settings__label { color: var(--text-soft); }
+
+/* Segmented 12h / 24h control */
+.settings__segmented {
+  display: flex;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.settings__segmented label { position: relative; }
+
+.settings__segmented span {
+  display: block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.settings__segmented input:checked + span {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.settings__segmented label:hover input:not(:checked) + span { color: var(--text-soft); }
+
+/* Visually hidden but focusable radios (segmented control and swatches). */
+.settings__segmented input,
+.settings__palette input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.settings__segmented input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Switches */
+.settings__switch { cursor: pointer; }
+
+.settings__switch input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  position: relative;
+  width: 1.9rem;
+  height: 1.1rem;
+  margin: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.settings__switch input::before {
+  content: "";
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.settings__switch input:checked { background: rgba(var(--accent-rgb), 0.4); }
+
+.settings__switch input:checked::before {
+  transform: translateX(0.8rem);
+  background: var(--accent);
+}
+
+.settings__switch input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Palette swatches */
+.settings__palettes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.settings__palette {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.settings__swatch {
+  width: 100%;
+  height: 2.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background:
+    radial-gradient(circle at 78% 30%, var(--accent) 0 3px, transparent 4px),
+    linear-gradient(125deg, var(--bg-0), var(--bg-2) 50%, var(--bg-3));
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings__palette:hover { color: var(--text-soft); }
+.settings__palette:hover .settings__swatch { border-color: rgba(255, 255, 255, 0.25); }
+.settings__palette:has(input:checked) { color: var(--text); }
+
+.settings__palette input:checked ~ .settings__swatch {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.settings__palette input:focus-visible ~ .settings__swatch {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Focus mode: only the clock ---------- */
+[data-focus] .cards,
+[data-focus] .clock__greeting,
+[data-focus] .clock__date { display: none; }
+
 @media (max-width: 720px) {
   .cards { grid-template-columns: 1fr; max-width: 480px; }
   .card { min-height: 150px; }
+  .dashboard { padding-bottom: 4.5rem; } /* clear the settings gear when scrolled down */
 }
 
 /* ---------- Reduced motion ---------- */
@@ -670,5 +936,9 @@ button, input { font: inherit; color: inherit; }
   .task,
   .task__check::before,
   .toast,
-  .toast.is-visible { transition: none; }
+  .toast.is-visible,
+  .settings__gear,
+  .settings__switch input,
+  .settings__switch input::before { transition: none; }
+  .settings { animation: none; }
 }

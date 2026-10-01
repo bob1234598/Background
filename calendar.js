@@ -6,7 +6,9 @@
   const STALE_MS = 5 * 60 * 1000;
   const EVENTS_URL = "https://www.googleapis.com/calendar/v3/calendars/primary/events";
 
-  const timeFormat = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" });
+  const makeTimeFormat = () =>
+    new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit", ...Settings.timeOptions() });
+  let timeFormat = makeTimeFormat();
 
   let events = null; // normalized events for today + tomorrow, or null if not loaded
   let fetchedAt = 0;
@@ -191,8 +193,12 @@
   // Periodic update. While an event link has keyboard focus, only update the
   // countdown text so focus isn't lost by rebuilding the list.
   function tick() {
-    if (!events) return;
-    if (!body.contains(document.activeElement)) return render();
+    if (!events || document.hidden) return;
+    if (!body.contains(document.activeElement)) {
+      // A tab left open all day still picks up new and changed events.
+      if (Date.now() - fetchedAt > STALE_MS) refresh(false);
+      return render();
+    }
     const now = Date.now();
     const { focus } = partition(now);
     const label = body.querySelector(".cal__countdown");
@@ -245,6 +251,12 @@
   });
 
   window.addEventListener("online", () => refresh(false));
+
+  // 12/24-hour setting changed.
+  Settings.onChange(() => {
+    timeFormat = makeTimeFormat();
+    render();
+  });
 
   // Signed in from another card: load events if we're showing "Connect".
   window.addEventListener(Google.SIGNED_IN, () => {

@@ -3,8 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
   <title>New Tab</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Applies the saved palette and focus mode before first paint. -->
+  <script src="store.js"></script>
+  <script src="settings.js"></script>
 </head>
 <body>
   <!-- Decorative background layers -->
@@ -14,7 +18,7 @@
   </div>
 
   <main class="dashboard">
-    <section class="clock" aria-live="polite">
+    <section class="clock">
       <p class="clock__greeting" id="greeting">Hello</p>
       <h1 class="clock__time" id="time">--:--</h1>
       <p class="clock__date" id="date"></p>
@@ -72,8 +76,59 @@
     </section>
   </main>
 
+  <button class="settings__gear" id="settings-gear" type="button" aria-label="Settings" title="Settings"
+          aria-expanded="false" aria-controls="settings-panel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+
+  <div class="settings glass" id="settings-panel" role="dialog" aria-label="Settings" hidden>
+    <form id="settings-form">
+      <fieldset class="settings__row">
+        <legend class="settings__label">Clock</legend>
+        <div class="settings__segmented">
+          <label><input type="radio" name="hour24" value="12"><span>12-hour</span></label>
+          <label><input type="radio" name="hour24" value="24"><span>24-hour</span></label>
+        </div>
+      </fieldset>
+
+      <label class="settings__row settings__switch">
+        <span class="settings__label">Show seconds</span>
+        <input type="checkbox" name="seconds" role="switch">
+      </label>
+
+      <label class="settings__row settings__switch">
+        <span class="settings__label">Focus mode</span>
+        <input type="checkbox" name="focus" role="switch">
+      </label>
+
+      <fieldset class="settings__row settings__row--stack">
+        <legend class="settings__label">Background</legend>
+        <div class="settings__palettes">
+          <label class="settings__palette" data-palette="midnight">
+            <input type="radio" name="palette" value="midnight">
+            <span class="settings__swatch" aria-hidden="true"></span>
+            <span>Midnight</span>
+          </label>
+          <label class="settings__palette" data-palette="teal">
+            <input type="radio" name="palette" value="teal">
+            <span class="settings__swatch" aria-hidden="true"></span>
+            <span>Teal</span>
+          </label>
+          <label class="settings__palette" data-palette="burgundy">
+            <input type="radio" name="palette" value="burgundy">
+            <span class="settings__swatch" aria-hidden="true"></span>
+            <span>Burgundy</span>
+          </label>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
   <script src="clock.js"></script>
-  <script src="store.js"></script>
   <script src="google.js"></script>
   <script src="calendar.js"></script>
   <script src="tasks.js"></script>

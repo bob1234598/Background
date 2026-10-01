@@ -2,9 +2,10 @@
 
 A Chrome extension (Manifest V3) that replaces the new tab page with a calm, minimal dashboard:
 
-- Slowly moving near-black → midnight-blue gradient with a faint drifting glow
+- Slowly moving dark gradient with a faint drifting glow, in three palettes
 - Large thin clock, full date and a time-of-day greeting
 - Frosted-glass **Today** (Google Calendar) and **Tasks** (Google Tasks) cards
+- A subtle settings gear (bottom-left) for clock format, seconds, focus mode and palette
 
 Plain HTML, CSS and JavaScript. No build step, no frameworks.
 
@@ -15,8 +16,9 @@ Plain HTML, CSS and JavaScript. No build step, no frameworks.
 | `manifest.json` | Extension manifest; overrides the new tab page  |
 | `newtab.html`   | Page markup                                     |
 | `styles.css`    | Background animation, glass styles, layout      |
-| `clock.js`      | Clock, date and greeting                        |
 | `store.js`      | Safe wrapper around `chrome.storage.local`      |
+| `settings.js`   | Settings panel; applies palette and focus mode before first paint |
+| `clock.js`      | Clock, date and greeting                        |
 | `google.js`     | Google sign-in (`getAuthToken`) and API requests |
 | `calendar.js`   | Today card: Google Calendar events, cached      |
 | `tasks.js`      | Tasks card: due-this-week filter, complete/add with undo, cached |
@@ -54,6 +56,9 @@ The extension uses `chrome.identity.getAuthToken` with the scopes
 ## Notes
 
 - The background animation and transitions are turned off if your OS has *Reduce motion* enabled.
-- The clock uses your system's 12/24-hour preference; the date and greeting are in English.
+- Settings are saved in `chrome.storage.local` (mirrored to `localStorage` so the palette and focus mode apply without a flash) and sync live across open new tabs.
+- The clock follows your system's 12/24-hour preference until you pick one in settings; calendar times follow the same choice. The date and greeting are in English.
+- **Focus mode** hides everything except the time; the gear stays available to turn it off.
+- Palettes: **Midnight** (navy + plum, default), **Teal** (charcoal + deep teal), **Burgundy** (near-black + deep burgundy).
 - Cards stack vertically on windows narrower than 720px.
-- The Tasks card shows overdue tasks and tasks due within 7 days by default; **Show all** in its header lists everything. After completing or adding a task, **Undo** (or ⌘Z / Ctrl+Z) reverts it for about 6 seconds.
+- The Tasks card shows overdue tasks and tasks due within 7 days by default; **Show all** in its header lists everything. After completing or adding a task, **Undo** (or ⌘Z / Ctrl+Z) reverts it for about 3 seconds.

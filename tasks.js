@@ -19,7 +19,8 @@
   const WEEK_DAYS = 7;
   const DONE_DELAY_MS = 900; // how long a checked task lingers before fading
   const FADE_MS = 400;       // must match the .task.is-leaving transition
-  const TOAST_MS = 6000;
+  const TOAST_MS = 3000;
+  const TOAST_RESUME_MS = 1500; // after the pointer or focus leaves the toast
 
   let lists = [];       // [{ id, title }]
   let listId = null;    // selected list
@@ -258,6 +259,7 @@
     return li;
   }
 
+  let renderedDay = "";
   function render() {
     if (!tasks) return;
     setConnected(true);
@@ -265,6 +267,7 @@
     renderToggle();
 
     const today = localDay(0);
+    renderedDay = today;
     const weekEnd = localDay(WEEK_DAYS);
     // Week view: overdue and due today..today+7 (inclusive). Undated tasks are hidden.
     const visible = showAll ? tasks : order(tasks.filter((t) => t.due && t.due <= weekEnd));
@@ -505,7 +508,7 @@
 
   toastUndo.addEventListener("click", runUndo);
   // Don't let the toast disappear while the pointer or focus is on it.
-  const resumeToast = () => toast.classList.contains("is-visible") && startToastTimer(3000);
+  const resumeToast = () => toast.classList.contains("is-visible") && startToastTimer(TOAST_RESUME_MS);
   toast.addEventListener("mouseenter", () => clearTimeout(toastTimer));
   toast.addEventListener("mouseleave", resumeToast);
   toast.addEventListener("focusin", () => clearTimeout(toastTimer));
@@ -534,6 +537,15 @@
   });
 
   window.addEventListener("online", () => refresh(false));
+
+  // A tab left open: refresh when stale and roll due labels over at midnight,
+  // but not while the user is checking off tasks or has focus in the list.
+  setInterval(() => {
+    if (document.hidden || !tasks || switching || completing.size) return;
+    if (content.contains(document.activeElement)) return;
+    if (Date.now() - fetchedAt > STALE_MS) refresh(false);
+    else if (localDay(0) !== renderedDay) render();
+  }, 60 * 1000);
 
   window.addEventListener(Google.SIGNED_IN, () => {
     if (!tasks) refresh(false);
