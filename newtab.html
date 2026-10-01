@@ -33,9 +33,19 @@
         <article class="card glass" aria-labelledby="tasks-title">
           <header class="card__header">
             <h2 class="card__title" id="tasks-title">Tasks</h2>
-            <span class="card__tag">0 open</span>
+            <span class="card__select" id="tasks-select" hidden>
+              <select id="tasks-list" aria-label="Task list"></select>
+            </span>
           </header>
-          <p class="card__empty">Nothing on your list. Enjoy the quiet.</p>
+          <div class="card__body" id="tasks-body">
+            <div class="tasks__content" id="tasks-content"></div>
+            <p class="card__error" id="tasks-error" role="alert" hidden></p>
+            <form class="tasks__add" id="tasks-form" autocomplete="off" hidden>
+              <span class="tasks__add-icon" aria-hidden="true">+</span>
+              <input class="tasks__input" id="tasks-input" type="text" placeholder="Add a task"
+                     aria-label="Add a task" maxlength="1024" spellcheck="false">
+            </form>
+          </div>
         </article>
       </section>
     </main>
@@ -62,8 +72,10 @@
   </div>
 
   <script src="clock.js"></script>
+  <script src="store.js"></script>
   <script src="google.js"></script>
   <script src="calendar.js"></script>
+  <script src="tasks.js"></script>
   <script src="muse.js"></script>
   <script src="chat.js"></script>
 </body>

@@ -87,24 +87,8 @@
   }
 
   // ---------- Storage ----------
-  const storage = typeof chrome !== "undefined" && chrome.storage ? chrome.storage.local : null;
-
-  async function loadCache() {
-    if (!storage) return null;
-    try {
-      return (await storage.get(CACHE_KEY))[CACHE_KEY] || null;
-    } catch {
-      return null;
-    }
-  }
-
-  function saveCache() {
-    storage?.set({ [CACHE_KEY]: { events, fetchedAt } }).catch(() => {});
-  }
-
-  function clearCache() {
-    storage?.remove(CACHE_KEY).catch(() => {});
-  }
+  const saveCache = () => Store.set(CACHE_KEY, { events, fetchedAt });
+  const clearCache = () => Store.remove(CACHE_KEY);
 
   // ---------- Rendering ----------
   function el(tag, className, text) {
@@ -240,7 +224,7 @@
   }
 
   async function init() {
-    const cached = await loadCache();
+    const cached = await Store.get(CACHE_KEY);
     if (cached && Array.isArray(cached.events)) {
       events = cached.events;
       fetchedAt = cached.fetchedAt || 0;
@@ -261,6 +245,11 @@
   });
 
   window.addEventListener("online", () => refresh(false));
+
+  // Signed in from another card: load events if we're showing "Connect".
+  window.addEventListener(Google.SIGNED_IN, () => {
+    if (!events) refresh(false);
+  });
 
   init();
 })();

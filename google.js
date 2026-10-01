@@ -1,5 +1,8 @@
 // Google sign-in and API requests, shared by the Calendar and Tasks cards.
 const Google = (() => {
+  // Window event fired after the user signs in interactively.
+  const SIGNED_IN = "google:signedin";
+
   // Thrown when the user needs to (re)connect their Google account.
   class AuthError extends Error {}
 
@@ -24,6 +27,8 @@ const Google = (() => {
     // Newer Chrome resolves to { token, grantedScopes }, older to the token string.
     const token = typeof result === "string" ? result : result && result.token;
     if (!token) throw new AuthError("No token returned.");
+    // Let other cards know they can load now.
+    if (interactive) window.dispatchEvent(new Event(SIGNED_IN));
     return token;
   }
 
@@ -76,5 +81,5 @@ const Google = (() => {
     throw new ApiError(message, res.status);
   }
 
-  return { request, AuthError, ApiError };
+  return { request, AuthError, ApiError, SIGNED_IN };
 })();

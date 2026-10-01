@@ -4,7 +4,7 @@ A Chrome extension (Manifest V3) that replaces the new tab page with a calm, min
 
 - Slowly moving near-black → midnight-blue gradient with a faint drifting glow
 - Large thin clock, full date and a time-of-day greeting
-- Frosted-glass **Today** card with your Google Calendar, and a **Tasks** placeholder card
+- Frosted-glass **Today** (Google Calendar) and **Tasks** (Google Tasks) cards
 - A **✦ Muse** input bar at the bottom; replies appear in a bubble above it
 
 Plain HTML, CSS and JavaScript. No build step, no frameworks.
@@ -17,8 +17,10 @@ Plain HTML, CSS and JavaScript. No build step, no frameworks.
 | `newtab.html`   | Page markup                                     |
 | `styles.css`    | Background animation, glass styles, layout      |
 | `clock.js`      | Clock, date and greeting                        |
+| `store.js`      | Safe wrapper around `chrome.storage.local`      |
 | `google.js`     | Google sign-in (`getAuthToken`) and API requests |
 | `calendar.js`   | Today card: Google Calendar events, cached      |
+| `tasks.js`      | Tasks card: Google Tasks lists, complete & add, cached |
 | `muse.js`       | `sendMessage(history)` — Muse backend (placeholder) |
 | `chat.js`       | Muse input bar, reply bubble, in-memory history |
 
