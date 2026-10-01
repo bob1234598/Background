@@ -25,7 +25,16 @@
         <article class="card glass" aria-labelledby="today-title">
           <header class="card__header">
             <h2 class="card__title" id="today-title">Today</h2>
-            <span class="card__tag">Calendar</span>
+            <div class="card__actions">
+              <span class="card__tag">Calendar</span>
+              <a class="card__open" href="https://calendar.google.com/calendar/r/day" target="_blank"
+                 rel="noopener noreferrer" aria-label="Open Google Calendar" title="Open Google Calendar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7M9 7h8v8"/>
+                </svg>
+              </a>
+            </div>
           </header>
           <div class="card__body" id="today-body"></div>
         </article>
@@ -33,9 +42,18 @@
         <article class="card glass" aria-labelledby="tasks-title">
           <header class="card__header">
             <h2 class="card__title" id="tasks-title">Tasks</h2>
-            <span class="card__select" id="tasks-select" hidden>
-              <select id="tasks-list" aria-label="Task list"></select>
-            </span>
+            <div class="card__actions">
+              <span class="card__select" id="tasks-select" hidden>
+                <select id="tasks-list" aria-label="Task list"></select>
+              </span>
+              <a class="card__open" href="https://tasks.google.com/" target="_blank"
+                 rel="noopener noreferrer" aria-label="Open Google Tasks" title="Open Google Tasks">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7M9 7h8v8"/>
+                </svg>
+              </a>
+            </div>
           </header>
           <div class="card__body" id="tasks-body">
             <div class="tasks__content" id="tasks-content"></div>

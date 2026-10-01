@@ -20,6 +20,7 @@
   let fetchedAt = 0;
   let version = 0;      // ignores responses from superseded refreshes
   let switching = false; // a newly selected list is loading
+  let revealId = null;   // task to scroll into view on the next render
   const completing = new Set(); // task ids checked but not yet removed
 
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -63,17 +64,27 @@
     };
   }
 
-  // Top-level tasks by position, each followed by its subtasks.
+  // Sort by due date (earliest first, undated last), then by Google's own order.
+  const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  function byDate(a, b) {
+    if (a.due !== b.due) {
+      if (!a.due) return 1;
+      if (!b.due) return -1;
+      return compare(a.due, b.due);
+    }
+    return compare(a.position, b.position);
+  }
+
+  // Top-level tasks by date, each followed by its subtasks (also by date).
   function order(items) {
     const ids = new Set(items.map((t) => t.id));
-    const byPosition = (a, b) => (a.position < b.position ? -1 : a.position > b.position ? 1 : 0);
-    const top = items.filter((t) => !t.parent || !ids.has(t.parent)).sort(byPosition);
+    const top = items.filter((t) => !t.parent || !ids.has(t.parent)).sort(byDate);
     const out = [];
     for (const t of top) {
       out.push({ ...t, sub: false });
       items
         .filter((c) => c.parent === t.id)
-        .sort(byPosition)
+        .sort(byDate)
         .forEach((c) => out.push({ ...c, sub: true }));
     }
     return out;
@@ -202,6 +213,16 @@
     const ul = el("ul", "tasks");
     ul.append(...tasks.map(renderTask));
     content.replaceChildren(ul);
+
+    // Scroll the list (not the page) so a just-added task is visible.
+    const target = revealId && ul.querySelector(`[data-id="${CSS.escape(revealId)}"]`);
+    revealId = null;
+    if (target && ul.scrollHeight > ul.clientHeight) {
+      const top = target.offsetTop; // .tasks is position: relative
+      if (top < ul.scrollTop || top + target.offsetHeight > ul.scrollTop + ul.clientHeight) {
+        ul.scrollTop = Math.max(0, top - ul.clientHeight / 2);
+      }
+    }
   }
 
   // Tasks still being added aren't cached: they may never reach Google.
@@ -244,8 +265,10 @@
 
   async function addTask(title) {
     const targetList = listId;
-    const temp = { id: `temp-${Date.now()}`, title, due: null, sub: false, saving: true };
-    tasks.unshift(temp);
+    // Empty position sorts first among undated tasks, where Google puts new ones.
+    const temp = { id: `temp-${Date.now()}`, title, due: null, parent: null, position: "", saving: true };
+    tasks = order([temp, ...tasks]);
+    revealId = temp.id;
     render();
 
     try {
@@ -253,9 +276,9 @@
         await Google.request(listUrl(targetList), jsonInit("POST", { title }))
       );
       if (tasks && listId === targetList) {
-        tasks = tasks
-          .filter((t) => t.id !== created.id)
-          .map((t) => (t.id === temp.id ? { ...created, sub: false } : t));
+        tasks = order(
+          tasks.filter((t) => t.id !== created.id).map((t) => (t.id === temp.id ? created : t))
+        );
         saveCache();
         render();
       }
@@ -279,7 +302,7 @@
       listId = data.listId;
       // Keep tasks that are still being added so they don't flicker away.
       const saving = (tasks || []).filter((t) => t.saving);
-      tasks = [...saving, ...data.tasks];
+      tasks = order([...saving, ...data.tasks]);
       fetchedAt = Date.now();
       switching = false;
       saveCache();
@@ -338,7 +361,7 @@
     if (cached && Array.isArray(cached.tasks) && (!listId || cached.listId === listId)) {
       lists = cached.lists || [];
       listId = cached.listId;
-      tasks = cached.tasks;
+      tasks = order(cached.tasks);
       fetchedAt = cached.fetchedAt || 0;
       render();
     } else {
