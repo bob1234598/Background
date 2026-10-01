@@ -69,16 +69,11 @@
     </main>
 
     <footer class="muse" id="muse">
-      <div class="muse__bubble glass" id="muse-bubble" role="region" aria-label="Muse reply" aria-live="polite" inert>
-        <button class="muse__close" id="muse-close" type="button" aria-label="Close reply">×</button>
-        <p class="muse__question" id="muse-question"></p>
-        <p class="muse__reply" id="muse-reply"></p>
-      </div>
-
       <form class="muse__bar glass" id="muse-form" autocomplete="off">
         <span class="muse__icon" aria-hidden="true">✦</span>
         <input class="muse__input" id="muse-input" type="text" placeholder="Ask Muse…"
                aria-label="Ask Muse" spellcheck="false">
+        <span class="muse__hint" id="muse-hint" role="status" aria-live="polite"></span>
         <button class="muse__send" id="muse-send" type="submit" aria-label="Send" disabled>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

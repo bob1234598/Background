@@ -7,7 +7,7 @@
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
-  "permissions": ["identity", "storage"],
+  "permissions": ["identity", "storage", "clipboardWrite"],
   "oauth2": {
     "client_id": "223395214171-b4e21ic0elhaofphb24hsvqbeagjpaga.apps.googleusercontent.com",
     "scopes": [
