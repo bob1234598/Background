@@ -22,6 +22,8 @@ Plain HTML, CSS and JavaScript. No build step, no frameworks.
 | `google.js`     | Google sign-in (`getAuthToken`) and API requests |
 | `calendar.js`   | Today card: Google Calendar events, cached      |
 | `tasks.js`      | Tasks card: due-this-week filter, complete/add with undo, cached |
+| `icons/`        | Extension icon: `icon.svg` source and exported PNGs (16–128px) |
+| `scripts/export-icons.sh` | Dev-only: re-exports the PNGs from `icon.svg` with headless Chrome |
 
 ## Load it unpacked
 
