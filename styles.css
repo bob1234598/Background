@@ -98,23 +98,14 @@ button, input { font: inherit; color: inherit; }
 }
 
 /* ---------- Layout ---------- */
-/* Column: dashboard fills the space, Muse bar sits below it in normal flow,
-   so the bar can never overlap the cards. */
-.page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
 .dashboard {
-  flex: 1;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: clamp(2.5rem, 6vh, 4.5rem);
-  /* Extra bottom padding lifts the clock and cards and gives the Muse bar room. */
-  padding: clamp(1.5rem, 4vh, 3rem) clamp(1rem, 4vw, 3rem) clamp(3rem, 12vh, 8rem);
+  padding: clamp(2rem, 6vh, 5rem) clamp(1rem, 4vw, 3rem);
 }
 
 /* ---------- Clock ---------- */
@@ -590,95 +581,11 @@ button, input { font: inherit; color: inherit; }
   .card { min-height: 150px; }
 }
 
-/* ---------- Muse bar ---------- */
-.muse {
-  position: relative;
-  width: min(600px, calc(100% - 2rem));
-  margin: 0 auto clamp(1rem, 3vh, 2rem);
-}
-
-.muse__bar {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  height: 52px;
-  padding: 0 0.4rem 0 1.15rem;
-  border-radius: 999px;
-  transition: border-color 0.3s ease, background 0.3s ease;
-}
-
-.muse__bar:focus-within {
-  border-color: rgba(var(--accent-rgb), 0.4);
-  background: rgba(255, 255, 255, 0.07);
-}
-
-.muse__icon {
-  flex: none;
-  color: var(--accent);
-  font-size: 0.95rem;
-}
-
-.muse__input {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 0.95rem;
-  font-weight: 300;
-  color: var(--text);
-  text-overflow: ellipsis;
-}
-
-.muse__input::placeholder { color: var(--text-muted); }
-
-.muse__send {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: none;
-  border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--accent);
-  cursor: pointer;
-  transition: background 0.2s ease, opacity 0.2s ease;
-}
-
-.muse__send:hover:not(:disabled) { background: rgba(var(--accent-rgb), 0.26); }
-.muse__send:disabled { opacity: 0.4; cursor: default; }
-.muse__send svg { width: 18px; height: 18px; }
-
-.muse__send:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.muse__hint {
-  flex: none;
-  max-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  font-size: 0.78rem;
-  color: var(--accent);
-  opacity: 0;
-  transition: opacity 0.3s ease, max-width 0.3s ease;
-}
-
-.muse__hint.is-visible {
-  max-width: 16rem;
-  opacity: 1;
-}
-
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .bg__gradient,
   .bg__glow { animation: none; }
   .card,
   .task,
-  .task__check::before,
-  .muse__bar,
-  .muse__hint { transition: none; }
+  .task__check::before { transition: none; }
 }

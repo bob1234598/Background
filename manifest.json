@@ -3,11 +3,11 @@
   "name": "Background — Minimal New Tab",
   "version": "0.1.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtccQ9dbAZn3EFTHzwUmuOKj8dald5+3WLRJ9BL2CHKmhhCPcZd0n+Rnj65UBGUn2B+DwGBke6gK5mTvk+AtdtWiRfs+r3dOD/GEZPscuEH7RPYZ8p0o/O/yxXTFElzow8oQsCS7VlHBS15SH+AlOsAXHR31vQRUhxLMWLRwjlQ+3TgMKNNbJxP80TEc3++w7z38ONEyQDBMgG5rwjwTDKnttfZlXmSEDZH5RNFB6B84hf+SWxZgn9juSaQkBnYADLpNfAUd1XLVzqTf5lIaLQhn9f32TgY0VxV7pwMzTevX2MBZTBfzr7ipuzBaWZuy7v6Tv2FFG07NUrMMXWTiAIQIDAQAB",
-  "description": "A calm, minimal new tab dashboard with a clock, today, tasks and Muse.",
+  "description": "A calm, minimal new tab dashboard with a clock, Google Calendar and Google Tasks.",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
-  "permissions": ["identity", "storage", "clipboardWrite"],
+  "permissions": ["identity", "storage"],
   "oauth2": {
     "client_id": "223395214171-b4e21ic0elhaofphb24hsvqbeagjpaga.apps.googleusercontent.com",
     "scopes": [

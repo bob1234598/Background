@@ -13,83 +13,64 @@
     <div class="bg__glow"></div>
   </div>
 
-  <div class="page">
-    <main class="dashboard">
-      <section class="clock" aria-live="polite">
-        <p class="clock__greeting" id="greeting">Hello</p>
-        <h1 class="clock__time" id="time">--:--</h1>
-        <p class="clock__date" id="date"></p>
-      </section>
+  <main class="dashboard">
+    <section class="clock" aria-live="polite">
+      <p class="clock__greeting" id="greeting">Hello</p>
+      <h1 class="clock__time" id="time">--:--</h1>
+      <p class="clock__date" id="date"></p>
+    </section>
 
-      <section class="cards">
-        <article class="card glass" aria-labelledby="today-title">
-          <header class="card__header">
-            <h2 class="card__title" id="today-title">Today</h2>
-            <div class="card__actions">
-              <span class="card__tag">Calendar</span>
-              <a class="card__open" href="https://calendar.google.com/calendar/r/day" target="_blank"
-                 rel="noopener noreferrer" aria-label="Open Google Calendar" title="Open Google Calendar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M7 17 17 7M9 7h8v8"/>
-                </svg>
-              </a>
-            </div>
-          </header>
-          <div class="card__body" id="today-body"></div>
-        </article>
-
-        <article class="card glass" aria-labelledby="tasks-title">
-          <header class="card__header">
-            <h2 class="card__title" id="tasks-title">Tasks</h2>
-            <div class="card__actions">
-              <span class="card__select" id="tasks-select" hidden>
-                <select id="tasks-list" aria-label="Task list"></select>
-              </span>
-              <a class="card__open" href="https://tasks.google.com/" target="_blank"
-                 rel="noopener noreferrer" aria-label="Open Google Tasks" title="Open Google Tasks">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M7 17 17 7M9 7h8v8"/>
-                </svg>
-              </a>
-            </div>
-          </header>
-          <div class="card__body" id="tasks-body">
-            <div class="tasks__content" id="tasks-content"></div>
-            <p class="card__error" id="tasks-error" role="alert" hidden></p>
-            <form class="tasks__add" id="tasks-form" autocomplete="off" hidden>
-              <span class="tasks__add-icon" aria-hidden="true">+</span>
-              <input class="tasks__input" id="tasks-input" type="text" placeholder="Add a task"
-                     aria-label="Add a task" maxlength="1024" spellcheck="false">
-            </form>
+    <section class="cards">
+      <article class="card glass" aria-labelledby="today-title">
+        <header class="card__header">
+          <h2 class="card__title" id="today-title">Today</h2>
+          <div class="card__actions">
+            <span class="card__tag">Calendar</span>
+            <a class="card__open" href="https://calendar.google.com/calendar/r/day" target="_blank"
+               rel="noopener noreferrer" aria-label="Open Google Calendar" title="Open Google Calendar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 17 17 7M9 7h8v8"/>
+              </svg>
+            </a>
           </div>
-        </article>
-      </section>
-    </main>
+        </header>
+        <div class="card__body" id="today-body"></div>
+      </article>
 
-    <footer class="muse" id="muse">
-      <form class="muse__bar glass" id="muse-form" autocomplete="off">
-        <span class="muse__icon" aria-hidden="true">✦</span>
-        <input class="muse__input" id="muse-input" type="text" placeholder="Ask Muse…"
-               aria-label="Ask Muse" spellcheck="false">
-        <span class="muse__hint" id="muse-hint" role="status" aria-live="polite"></span>
-        <button class="muse__send" id="muse-send" type="submit" aria-label="Send" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 19V5M5 12l7-7 7 7"/>
-          </svg>
-        </button>
-      </form>
-    </footer>
-  </div>
+      <article class="card glass" aria-labelledby="tasks-title">
+        <header class="card__header">
+          <h2 class="card__title" id="tasks-title">Tasks</h2>
+          <div class="card__actions">
+            <span class="card__select" id="tasks-select" hidden>
+              <select id="tasks-list" aria-label="Task list"></select>
+            </span>
+            <a class="card__open" href="https://tasks.google.com/" target="_blank"
+               rel="noopener noreferrer" aria-label="Open Google Tasks" title="Open Google Tasks">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 17 17 7M9 7h8v8"/>
+              </svg>
+            </a>
+          </div>
+        </header>
+        <div class="card__body" id="tasks-body">
+          <div class="tasks__content" id="tasks-content"></div>
+          <p class="card__error" id="tasks-error" role="alert" hidden></p>
+          <form class="tasks__add" id="tasks-form" autocomplete="off" hidden>
+            <span class="tasks__add-icon" aria-hidden="true">+</span>
+            <input class="tasks__input" id="tasks-input" type="text" placeholder="Add a task"
+                   aria-label="Add a task" maxlength="1024" spellcheck="false">
+          </form>
+        </div>
+      </article>
+    </section>
+  </main>
 
   <script src="clock.js"></script>
   <script src="store.js"></script>
   <script src="google.js"></script>
   <script src="calendar.js"></script>
   <script src="tasks.js"></script>
-  <script src="muse.js"></script>
-  <script src="chat.js"></script>
 </body>
 </html>
