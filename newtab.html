@@ -38,10 +38,11 @@
         <div class="card__body" id="today-body"></div>
       </article>
 
-      <article class="card glass" aria-labelledby="tasks-title">
+      <article class="card glass" id="tasks-card" aria-labelledby="tasks-title">
         <header class="card__header">
           <h2 class="card__title" id="tasks-title">Tasks</h2>
           <div class="card__actions">
+            <button class="card__toggle" id="tasks-toggle" type="button" aria-pressed="false" hidden>Show all</button>
             <span class="card__select" id="tasks-select" hidden>
               <select id="tasks-list" aria-label="Task list"></select>
             </span>
@@ -56,12 +57,16 @@
         </header>
         <div class="card__body" id="tasks-body">
           <div class="tasks__content" id="tasks-content"></div>
-          <p class="card__error" id="tasks-error" role="alert" hidden></p>
           <form class="tasks__add" id="tasks-form" autocomplete="off" hidden>
             <span class="tasks__add-icon" aria-hidden="true">+</span>
             <input class="tasks__input" id="tasks-input" type="text" placeholder="Add a task"
                    aria-label="Add a task" maxlength="1024" spellcheck="false">
           </form>
+        </div>
+        <div class="toast glass" id="tasks-toast" role="status" aria-live="polite">
+          <span id="tasks-toast-text"></span>
+          <span class="toast__sep" aria-hidden="true">·</span>
+          <button class="toast__undo" id="tasks-toast-undo" type="button">Undo</button>
         </div>
       </article>
     </section>

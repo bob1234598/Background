@@ -19,7 +19,7 @@ Plain HTML, CSS and JavaScript. No build step, no frameworks.
 | `store.js`      | Safe wrapper around `chrome.storage.local`      |
 | `google.js`     | Google sign-in (`getAuthToken`) and API requests |
 | `calendar.js`   | Today card: Google Calendar events, cached      |
-| `tasks.js`      | Tasks card: Google Tasks lists, complete & add, cached |
+| `tasks.js`      | Tasks card: due-this-week filter, complete/add with undo, cached |
 
 ## Load it unpacked
 
@@ -56,3 +56,4 @@ The extension uses `chrome.identity.getAuthToken` with the scopes
 - The background animation and transitions are turned off if your OS has *Reduce motion* enabled.
 - The clock uses your system's 12/24-hour preference; the date and greeting are in English.
 - Cards stack vertically on windows narrower than 720px.
+- The Tasks card shows overdue tasks and tasks due within 7 days by default; **Show all** in its header lists everything. After completing or adding a task, **Undo** (or ⌘Z / Ctrl+Z) reverts it for about 6 seconds.
