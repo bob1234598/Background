@@ -1,0 +1,374 @@
+/* ---------- Tokens ---------- */
+:root {
+  --black: #05070d;
+  --ink: #070b1a;
+  --midnight: #0a1a46;
+  --electric: #12307f;
+
+  --text: rgba(255, 255, 255, 0.92);
+  --text-soft: rgba(255, 255, 255, 0.72);
+  --text-muted: rgba(255, 255, 255, 0.5);
+
+  --accent: #8ab4ff;            /* soft electric blue */
+  --accent-rgb: 138, 180, 255;
+  --accent-soft: rgba(var(--accent-rgb), 0.14);
+
+  --glass-bg: rgba(255, 255, 255, 0.055);
+  --glass-border: rgba(255, 255, 255, 0.11);
+  --glass-blur: 18px;
+  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+
+  --radius: 20px;
+
+  --font: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          "Helvetica Neue", Inter, Roboto, sans-serif;
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, p { margin: 0; }
+
+button, input { font: inherit; color: inherit; }
+
+/* ---------- Background ---------- */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.bg__gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    125deg,
+    var(--black) 0%,
+    var(--ink) 25%,
+    var(--midnight) 55%,
+    var(--electric) 75%,
+    var(--black) 100%
+  );
+  background-size: 300% 300%;
+  animation: gradient-shift 60s ease-in-out infinite alternate;
+}
+
+.bg__glow {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  top: -20vmax;
+  left: -20vmax;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(70, 130, 255, 0.13) 0%,
+    rgba(70, 130, 255, 0.05) 35%,
+    transparent 70%
+  );
+  filter: blur(40px);
+  animation: glow-drift 90s ease-in-out infinite alternate;
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 30%; }
+  100% { background-position: 100% 70%; }
+}
+
+@keyframes glow-drift {
+  0%   { transform: translate(0, 0); }
+  33%  { transform: translate(60vw, 20vh); }
+  66%  { transform: translate(25vw, 55vh); }
+  100% { transform: translate(70vw, 45vh); }
+}
+
+/* ---------- Layout ---------- */
+/* Column: dashboard fills the space, Muse bar sits below it in normal flow,
+   so the bar can never overlap the cards. */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2.5rem, 6vh, 4.5rem);
+  /* Extra bottom padding lifts the clock and cards and gives the Muse bar room. */
+  padding: clamp(1.5rem, 4vh, 3rem) clamp(1rem, 4vw, 3rem) clamp(3rem, 12vh, 8rem);
+}
+
+/* ---------- Clock ---------- */
+.clock { text-align: center; }
+
+.clock__greeting {
+  font-size: clamp(0.85rem, 1.1vw, 1rem);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.85;
+  margin-bottom: 0.6rem;
+}
+
+.clock__time {
+  font-size: clamp(4.5rem, 13vw, 10rem);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.86);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 40px rgba(var(--accent-rgb), 0.12);
+}
+
+.clock__period {
+  font-size: 0.22em;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  margin-left: 0.3em;
+  color: var(--text-muted);
+  vertical-align: 0.35em;
+}
+
+.clock__date {
+  margin-top: 0.9rem;
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  font-weight: 300;
+  color: var(--text-soft);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Glass ---------- */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- Cards ---------- */
+.cards {
+  width: 100%;
+  max-width: 860px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.card {
+  border-radius: var(--radius);
+  padding: 1.5rem 1.6rem;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: border-color 0.4s ease, background 0.4s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.card__title {
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.card__tag {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.card__empty {
+  margin-top: auto;
+  margin-bottom: auto;
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+@media (max-width: 720px) {
+  .cards { grid-template-columns: 1fr; max-width: 480px; }
+  .card { min-height: 150px; }
+}
+
+/* ---------- Muse bar ---------- */
+.muse {
+  position: relative;
+  width: min(600px, calc(100% - 2rem));
+  margin: 0 auto clamp(1rem, 3vh, 2rem);
+}
+
+.muse__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 52px;
+  padding: 0 0.4rem 0 1.15rem;
+  border-radius: 999px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.muse__bar:focus-within {
+  border-color: rgba(var(--accent-rgb), 0.4);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.muse__icon {
+  flex: none;
+  color: var(--accent);
+  font-size: 0.95rem;
+}
+
+.muse__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--text);
+  text-overflow: ellipsis;
+}
+
+.muse__input::placeholder { color: var(--text-muted); }
+
+.muse__send {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.muse__send:hover:not(:disabled) { background: rgba(var(--accent-rgb), 0.26); }
+.muse__send:disabled { opacity: 0.4; cursor: default; }
+.muse__send svg { width: 18px; height: 18px; }
+
+.muse__send:focus-visible,
+.muse__close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Muse reply bubble ---------- */
+.muse__bubble {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 0.75rem);
+  max-height: min(45vh, 420px);
+  overflow-y: auto;
+  padding: 1rem 2.6rem 1.1rem 1.25rem;
+  border-radius: var(--radius);
+  background: rgba(8, 12, 28, 0.6);
+  transform-origin: bottom center;
+  transform: translateY(8px) scale(0.97);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.25s ease, visibility 0s linear 0.35s;
+}
+
+.muse__bubble.is-open {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.25s ease, visibility 0s;
+}
+
+.muse__close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.muse__close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.muse__question {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.muse__reply {
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.muse__reply.is-pending { color: var(--text-muted); }
+.muse__reply.is-error { color: #ff9a9a; }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .bg__gradient,
+  .bg__glow { animation: none; }
+  .card,
+  .muse__bar,
+  .muse__bubble,
+  .muse__bubble.is-open { transition: none; }
+}

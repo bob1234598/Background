@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Background — Minimal New Tab",
+  "version": "0.1.0",
+  "description": "A calm, minimal new tab dashboard with a clock, today, tasks and Muse.",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  }
+}

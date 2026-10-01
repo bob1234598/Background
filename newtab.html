@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Tab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Decorative background layers -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg__gradient"></div>
+    <div class="bg__glow"></div>
+  </div>
+
+  <div class="page">
+    <main class="dashboard">
+      <section class="clock" aria-live="polite">
+        <p class="clock__greeting" id="greeting">Hello</p>
+        <h1 class="clock__time" id="time">--:--</h1>
+        <p class="clock__date" id="date"></p>
+      </section>
+
+      <section class="cards">
+        <article class="card glass" aria-labelledby="today-title">
+          <header class="card__header">
+            <h2 class="card__title" id="today-title">Today</h2>
+            <span class="card__tag">Calendar</span>
+          </header>
+          <p class="card__empty">No events yet. Your schedule will appear here.</p>
+        </article>
+
+        <article class="card glass" aria-labelledby="tasks-title">
+          <header class="card__header">
+            <h2 class="card__title" id="tasks-title">Tasks</h2>
+            <span class="card__tag">0 open</span>
+          </header>
+          <p class="card__empty">Nothing on your list. Enjoy the quiet.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="muse" id="muse">
+      <div class="muse__bubble glass" id="muse-bubble" role="region" aria-label="Muse reply" aria-live="polite" inert>
+        <button class="muse__close" id="muse-close" type="button" aria-label="Close reply">×</button>
+        <p class="muse__question" id="muse-question"></p>
+        <p class="muse__reply" id="muse-reply"></p>
+      </div>
+
+      <form class="muse__bar glass" id="muse-form" autocomplete="off">
+        <span class="muse__icon" aria-hidden="true">✦</span>
+        <input class="muse__input" id="muse-input" type="text" placeholder="Ask Muse…"
+               aria-label="Ask Muse" spellcheck="false">
+        <button class="muse__send" id="muse-send" type="submit" aria-label="Send" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+          </svg>
+        </button>
+      </form>
+    </footer>
+  </div>
+
+  <script src="clock.js"></script>
+  <script src="muse.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>
