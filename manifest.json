@@ -7,9 +7,9 @@
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
-  "permissions": ["identity"],
+  "permissions": ["identity", "storage"],
   "oauth2": {
-    "client_id": "REPLACE_WITH_YOUR_CLIENT_ID.apps.googleusercontent.com",
+    "client_id": "223395214171-b4e21ic0elhaofphb24hsvqbeagjpaga.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/calendar.readonly",
       "https://www.googleapis.com/auth/tasks"

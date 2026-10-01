@@ -4,7 +4,7 @@ A Chrome extension (Manifest V3) that replaces the new tab page with a calm, min
 
 - Slowly moving near-black → midnight-blue gradient with a faint drifting glow
 - Large thin clock, full date and a time-of-day greeting
-- Frosted-glass **Today** and **Tasks** placeholder cards
+- Frosted-glass **Today** card with your Google Calendar, and a **Tasks** placeholder card
 - A **✦ Muse** input bar at the bottom; replies appear in a bubble above it
 
 Plain HTML, CSS and JavaScript. No build step, no frameworks.
@@ -17,6 +17,8 @@ Plain HTML, CSS and JavaScript. No build step, no frameworks.
 | `newtab.html`   | Page markup                                     |
 | `styles.css`    | Background animation, glass styles, layout      |
 | `clock.js`      | Clock, date and greeting                        |
+| `google.js`     | Google sign-in (`getAuthToken`) and API requests |
+| `calendar.js`   | Today card: Google Calendar events, cached      |
 | `muse.js`       | `sendMessage(history)` — Muse backend (placeholder) |
 | `chat.js`       | Muse input bar, reply bubble, in-memory history |
 
@@ -38,6 +40,25 @@ Edit any file, then click the reload icon (↻) on the extension's card in `chro
 user message). It must return a `Promise<string>` with the reply, or throw on error.
 Right now it returns "Muse isn't connected yet" after a short delay. History is kept in
 memory only and is cleared when the tab closes.
+
+## Google Calendar & Tasks setup
+
+The extension uses `chrome.identity.getAuthToken` with the scopes
+`calendar.readonly` and `tasks` (see `oauth2` in `manifest.json`). One-time setup:
+
+1. **Pin the extension ID.** Generate a key (keep `key.pem` private; it's gitignored):
+   ```sh
+   openssl genrsa 2048 | openssl pkcs8 -topk8 -nocrypt -out key.pem
+   openssl rsa -in key.pem -pubout -outform DER | openssl base64 -A   # → "key" in manifest.json
+   ```
+   Add the output as `"key": "MIIB…"` in `manifest.json`, reload the extension and note the ID
+   shown in `chrome://extensions`.
+2. **Google Cloud project.** Create a project at console.cloud.google.com and enable the
+   **Google Calendar API** and **Google Tasks API**.
+3. **OAuth consent.** In *Google Auth Platform*: set app name and emails, audience **External**,
+   leave it in **Testing**, and add your Google account as a **test user**.
+4. **OAuth client.** Create a client of type **Chrome Extension** with the extension ID from step 1
+   as the *Item ID*. Copy the client ID into `oauth2.client_id` in `manifest.json` and reload.
 
 ## Notes
 
