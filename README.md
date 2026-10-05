@@ -21,7 +21,7 @@ Plain HTML, CSS and JavaScript. No build step, no frameworks.
 | `clock.js`      | Clock, date and greeting                        |
 | `google.js`     | Google sign-in (`getAuthToken`) and API requests |
 | `calendar.js`   | Today card: Google Calendar events, cached      |
-| `tasks.js`      | Tasks card: due-this-week filter, complete/add with undo, cached |
+| `tasks.js`      | Tasks card: day/week/month/all filter, complete/add with undo, cached |
 | `icons/`        | Extension icon: `icon.svg` source and exported PNGs (16–128px) |
 | `scripts/export-icons.sh` | Dev-only: re-exports the PNGs from `icon.svg` with headless Chrome |
 
@@ -63,4 +63,4 @@ The extension uses `chrome.identity.getAuthToken` with the scopes
 - **Focus mode** hides everything except the time; the gear stays available to turn it off.
 - Palettes: **Midnight** (navy + plum, default), **Teal** (charcoal + deep teal), **Burgundy** (near-black + deep burgundy).
 - Cards stack vertically on windows narrower than 720px.
-- The Tasks card shows overdue tasks and tasks due within 7 days by default; **Show all** in its header lists everything. After completing or adding a task, **Undo** (or ⌘Z / Ctrl+Z) reverts it for about 3 seconds.
+- The Tasks card shows overdue tasks and tasks due within 7 days by default; the button in its header cycles the view through **Today**, **This week**, **This month** (30 days) and **All tasks**, and names the view currently shown. After completing or adding a task, **Undo** (or ⌘Z / Ctrl+Z) reverts it for about 3 seconds.

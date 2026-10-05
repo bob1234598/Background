@@ -14,9 +14,18 @@
   const API = "https://tasks.googleapis.com/tasks/v1";
   const CACHE_KEY = "tasksCache";
   const LIST_KEY = "tasksListId";     // chosen list; kept even after signing out
-  const SHOW_ALL_KEY = "tasksShowAll"; // false = only tasks due within a week
+  const RANGE_KEY = "tasksRange";
+  const SHOW_ALL_KEY = "tasksShowAll"; // legacy week/all toggle, read once to migrate
   const STALE_MS = 5 * 60 * 1000;
-  const WEEK_DAYS = 7;
+  // Views the header button cycles through, in order. `days` is how far ahead
+  // a task may be due (overdue tasks always show); null = everything, dated or not.
+  const RANGES = [
+    { id: "day", days: 0, label: "Today", hint: "Showing tasks due today", empty: "Nothing due today." },
+    { id: "week", days: 7, label: "This week", hint: "Showing tasks due within a week", empty: "Nothing due this week." },
+    { id: "month", days: 30, label: "This month", hint: "Showing tasks due within a month", empty: "Nothing due this month." },
+    { id: "all", days: null, label: "All tasks", hint: "Showing all tasks", empty: "Nothing on your list. Enjoy the quiet." },
+  ];
+  const DEFAULT_RANGE = "week";
   const DONE_DELAY_MS = 900; // how long a checked task lingers before fading
   const FADE_MS = 400;       // must match the .task.is-leaving transition
   const TOAST_MS = 3000;
@@ -25,7 +34,7 @@
   let lists = [];       // [{ id, title }]
   let listId = null;    // selected list
   let tasks = null;     // normalized tasks for listId, or null when signed out / not loaded
-  let showAll = false;
+  let range = RANGES.find((r) => r.id === DEFAULT_RANGE);
   let fetchedAt = 0;
   let version = 0;      // ignores responses from superseded refreshes
   let switching = false; // a newly selected list is loading
@@ -227,10 +236,12 @@
     select.value = listId;
   }
 
+  const nextRange = () => RANGES[(RANGES.indexOf(range) + 1) % RANGES.length];
+
   function renderToggle() {
-    toggle.textContent = showAll ? "This week" : "Show all";
-    toggle.setAttribute("aria-pressed", String(showAll));
-    toggle.title = showAll ? "Show only tasks due within a week" : "Show all tasks";
+    // The button names the current view; a click moves on to the next one.
+    toggle.textContent = range.label;
+    toggle.title = `${range.hint}. Click for: ${nextRange().label}`;
   }
 
   function renderTask(task, today) {
@@ -268,13 +279,13 @@
 
     const today = localDay(0);
     renderedDay = today;
-    const weekEnd = localDay(WEEK_DAYS);
-    // Week view: overdue and due today..today+7 (inclusive). Undated tasks are hidden.
-    const visible = showAll ? tasks : order(tasks.filter((t) => t.due && t.due <= weekEnd));
+    const showAll = range.days === null;
+    // Ranged views: overdue and due today..today+days (inclusive). Undated tasks are hidden.
+    const rangeEnd = showAll ? "" : localDay(range.days);
+    const visible = showAll ? tasks : order(tasks.filter((t) => t.due && t.due <= rangeEnd));
 
     if (visible.length === 0) {
-      const text = showAll ? "Nothing on your list. Enjoy the quiet." : "Nothing due this week.";
-      content.replaceChildren(el("p", "card__empty", text));
+      content.replaceChildren(el("p", "card__empty", range.empty));
       return;
     }
     const ul = el("ul", "tasks");
@@ -386,8 +397,8 @@
   // Add: instant on screen, synced in the background, undoable (deletes it).
   function addTask(title) {
     const list = listId;
-    // In the week view, new tasks are due today so they don't vanish.
-    const due = showAll ? null : localDay(0);
+    // In the ranged views, new tasks are due today so they don't vanish.
+    const due = range.days === null ? null : localDay(0);
     // Empty position sorts first among same-day tasks, where Google puts new ones.
     const temp = { id: `temp-${Date.now()}`, title, due, parent: null, position: "", saving: true };
     const op = { undone: false };
@@ -493,8 +504,8 @@
   });
 
   toggle.addEventListener("click", () => {
-    showAll = !showAll;
-    Store.set(SHOW_ALL_KEY, showAll);
+    range = nextRange();
+    Store.set(RANGE_KEY, range.id);
     render();
   });
 
@@ -553,13 +564,15 @@
 
   // ---------- Start ----------
   async function init() {
-    const [cached, savedList, savedShowAll] = await Promise.all([
+    const [cached, savedList, savedRange, savedShowAll] = await Promise.all([
       Store.get(CACHE_KEY),
       Store.get(LIST_KEY),
+      Store.get(RANGE_KEY),
       Store.get(SHOW_ALL_KEY),
     ]);
     listId = savedList || null;
-    showAll = savedShowAll === true;
+    const rangeId = savedRange || (savedShowAll === true ? "all" : DEFAULT_RANGE);
+    range = RANGES.find((r) => r.id === rangeId) || range;
 
     if (cached && Array.isArray(cached.tasks) && (!listId || cached.listId === listId)) {
       lists = cached.lists || [];
